@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin - Add Question</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f4f8;
+      max-width: 600px;
+      margin: auto;
+      padding: 20px;
+      color: #333;
+    }
+    h2 {
+      color: #2c3e50;
+      text-align: center;
+    }
+    input, textarea, select, button {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 5px;
+      border: 1px solid #bdc3c7;
+      font-size: 16px;
+    }
+    input:focus, textarea:focus, select:focus {
+      border-color: #3498db;
+      outline: none;
+      box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+    }
+    button {
+      background: #3498db;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background 0.3s ease;
+    }
+    button:hover {
+      background: #2980b9;
+    }
+    .home-button {
+      background: #e74c3c;
+      margin-top: 20px;
+      transition: background 0.3s ease;
+    }
+    .home-button:hover {
+      background: #c0392b;
+    }
+    #status {
+      text-align: center;
+      font-size: 14px;
+      color: #27ae60;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Add New Question</h2>
+  <form id="questionForm">
+    <textarea id="questionText" placeholder="Enter question" required></textarea>
+    <input type="text" placeholder="Option 1" id="opt1" required>
+    <input type="text" placeholder="Option 2" id="opt2" required>
+    <input type="text" placeholder="Option 3" id="opt3" required>
+    <input type="text" placeholder="Option 4" id="opt4" required>
+    <select id="correctIndex">
+      <option value="0">Correct: Option 1</option>
+      <option value="1">Correct: Option 2</option>
+      <option value="2">Correct: Option 3</option>
+      <option value="3">Correct: Option 4</option>
+    </select>
+    <textarea id="explanation" placeholder="Why is the correct option correct?"></textarea>
+    <button type="submit">Submit</button>
+  </form>
+  <p id="status"></p>
+
+  <button class="home-button" onclick="window.location.href='admin-dashboard.html'">🏠 Go to Home</button>
+
+  <script>
+    document.getElementById('questionForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const options = [
+        { text: document.getElementById('opt1').value, isCorrect: false },
+        { text: document.getElementById('opt2').value, isCorrect: false },
+        { text: document.getElementById('opt3').value, isCorrect: false },
+        { text: document.getElementById('opt4').value, isCorrect: false }
+      ];
+      const correct = parseInt(document.getElementById('correctIndex').value);
+      options[correct].isCorrect = true;
+
+      const payload = {
+        text: document.getElementById('questionText').value,
+        options: options,
+        explanation: document.getElementById('explanation').value
+      };
+
+      fetch('/api/admin/question', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      })
+      .then(res => res.text())
+      .then(msg => {
+        document.getElementById('status').innerText = msg;
+        document.getElementById('questionForm').reset();
+      });
+    });
+  </script>
+</body>
+</html>

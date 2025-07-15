@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Leaderboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Google Font -->
+  
+  <style>
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: linear-gradient(to bottom right, #fdfbfb, #ebedee);
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+    }
+
+    h2 {
+      color: #2e7d32;
+      margin-bottom: 20px;
+    }
+
+    .top-three {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+    }
+
+    .medal {
+      background: white;
+      border-radius: 12px;
+      padding: 15px;
+      width: 100px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .medal h3 {
+      margin: 5px 0;
+      font-size: 16px;
+    }
+
+    .medal span {
+      font-size: 14px;
+      color: #555;
+    }
+
+    .gold { border-top: 5px solid gold; }
+    .silver { border-top: 5px solid silver; }
+    .bronze { border-top: 5px solid #cd7f32; }
+
+    .others {
+      max-width: 400px;
+      margin: auto;
+      text-align: left;
+    }
+
+    .others h4 {
+      margin-top: 30px;
+      color: #444;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    li {
+      background: white;
+      margin: 8px 0;
+      padding: 12px 16px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      font-size: 15px;
+    }
+
+    .back-btn {
+      margin-top: 30px;
+      padding: 12px 24px;
+      font-size: 16px;
+      background: #2196F3;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .back-btn:hover {
+      background: #1976D2;
+    }
+  </style>
+</head>
+<body>
+  <h2>🏆 Leaderboard</h2>
+
+  <div class="top-three" id="topThree"></div>
+
+  <div class="others">
+    <h4>All Participants</h4>
+    <ul id="othersList"></ul>
+  </div>
+
+  <button class="back-btn" onclick="window.location.href='index.html'">⬅️ Back to Home</button>
+
+  <script>
+    const leaderboard = JSON.parse(localStorage.getItem('leaderboard') || '[]');
+    leaderboard.sort((a, b) => b.score - a.score);
+
+    const topThree = leaderboard.slice(0, 3);
+    const others = leaderboard.slice(3);
+
+    const topThreeContainer = document.getElementById('topThree');
+    const othersList = document.getElementById('othersList');
+
+    const medals = ['gold', 'silver', 'bronze'];
+
+    topThree.forEach((entry, index) => {
+      const div = document.createElement('div');
+      div.className = `medal ${medals[index]}`;
+      div.innerHTML = `<h3>${index + 1}️⃣ ${entry.name}</h3><span>${entry.score} pts</span>`;
+      topThreeContainer.appendChild(div);
+    });
+
+    others.forEach(entry => {
+      const li = document.createElement('li');
+      li.textContent = `${entry.name} - ${entry.score} pts`;
+      othersList.appendChild(li);
+    });
+  </script>
+</body>
+</html>
+
+
+
+<!--  
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Leaderboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f9f9f9;
+      padding: 20px;
+      max-width: 600px;
+      margin: auto;
+      text-align: center;
+    }
+    h2 {
+      color: #4CAF50;
+      margin-bottom: 20px;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      background: white;
+      margin: 10px 0;
+      padding: 15px;
+      border-radius: 5px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      font-size: 18px;
+    }
+    button {
+      margin-top: 20px;
+      padding: 12px 24px;
+      font-size: 16px;
+      background: #2196F3;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #1976D2;
+    }
+  </style>
+</head>
+<body>
+  <h2>🏆 Leaderboard</h2>
+  <ul id="leaderboard"></ul>
+  <button onclick="window.location.href='index.html'">Back to Home</button>
+
+  <script>
+    const leaderboard = JSON.parse(localStorage.getItem('leaderboard') || '[]');
+
+    // Sort by score descending
+    leaderboard.sort((a, b) => b.score - a.score);
+
+    const list = document.getElementById('leaderboard');
+    if (leaderboard.length === 0) {
+      list.innerHTML = '<li>No scores yet. Take the quiz!</li>';
+    } else {
+      leaderboard.forEach(entry => {
+        const li = document.createElement('li');
+        li.textContent = `${entry.name} - ${entry.score} pts`;
+        list.appendChild(li);
+      });
+    }
+  </script>
+</body>
+</html>
+-->

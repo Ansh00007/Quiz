@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Start Quiz</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f4f4f4;
+      text-align: center;
+      padding: 50px 20px;
+    }
+    h2 {
+      color: #4CAF50;
+      margin-bottom: 30px;
+    }
+    input {
+      padding: 12px;
+      width: 80%;
+      max-width: 300px;
+      margin: 20px auto;
+      display: block;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+    button {
+      padding: 12px 24px;
+      font-size: 16px;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 10px;
+    }
+    button:hover {
+      background: #388E3C;
+    }
+    .home-btn {
+      background: #2196F3;
+    }
+    .home-btn:hover {
+      background: #1976D2;
+    }
+  </style>
+</head>
+<body>
+  <h2>Enter Your Name to Start</h2>
+  <input type="text" id="username" placeholder="Your Name" required>
+  <button onclick="startQuiz()">Start Quiz</button>
+  <button class="home-btn" onclick="window.location.href='index.html'">🏠 Back to Home</button>
+
+  <script>
+    const isUserLoggedIn = localStorage.getItem('isUserLoggedIn');
+    const loggedInEmail = localStorage.getItem('loggedInUserEmail');
+    const users = JSON.parse(localStorage.getItem('users')) || [];
+    const currentUser = users.find(u => u.email === loggedInEmail);
+
+    if (!isUserLoggedIn || !currentUser) {
+      alert('Please login first.');
+      window.location.href = 'user-login.html';
+    }
+
+    // Check if user already took the quiz
+    if (currentUser.quizCompleted === true) {
+      alert("You already took the test.");
+      window.location.href = 'index.html';
+    }
+
+    document.getElementById('username').value = currentUser.name;
+
+    function startQuiz() {
+      const name = document.getElementById('username').value.trim();
+      if (name === '') {
+        alert('Please enter your name.');
+        return;
+      }
+      localStorage.setItem('quizUser', name);
+      localStorage.setItem('quizScore', 0);
+      window.location.href = 'quiz.html';
+    }
+  </script>
+</body>
+</html>

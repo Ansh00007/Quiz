@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Analytics</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f9f9f9;
+      padding: 20px;
+      max-width: 700px;
+      margin: auto;
+      text-align: center;
+    }
+    h2 {
+      color: #4CAF50;
+      margin-bottom: 20px;
+    }
+    .card {
+      background: white;
+      margin: 15px 0;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      font-size: 18px;
+    }
+    .btn {
+      margin-top: 20px;
+      padding: 12px 24px;
+      font-size: 16px;
+      background: #FF5722;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .btn:hover {
+      background: #E64A19;
+    }
+    .back-btn {
+      margin-top: 10px;
+      padding: 10px 20px;
+      background: #2196F3;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      display: inline-block;
+    }
+    .back-btn:hover {
+      background: #1976D2;
+    }
+  </style>
+</head>
+<body>
+  <h2>📊 Quiz Analytics</h2>
+
+  <div class="card" id="totalAttempts">Total Attempts: 0</div>
+  <div class="card" id="averageScore">Average Score: 0</div>
+  <div class="card" id="highestScore">Highest Score: 0</div>
+
+  <button class="btn" onclick="clearAnalytics()">Clear All Results</button><br><br>
+  <a href="admin-dashboard.html" class="back-btn">⬅️ Back to Admin Panel</a>
+
+  <script>
+    function loadAnalytics() {
+      const leaderboard = JSON.parse(localStorage.getItem('leaderboard') || '[]');
+      const total = leaderboard.length;
+      const scores = leaderboard.map(entry => entry.score);
+      const avg = scores.length ? (scores.reduce((a, b) => a + b, 0) / scores.length).toFixed(2) : 0;
+      const max = scores.length ? Math.max(...scores) : 0;
+
+      document.getElementById('totalAttempts').innerText = `Total Attempts: ${total}`;
+      document.getElementById('averageScore').innerText = `Average Score: ${avg}`;
+      document.getElementById('highestScore').innerText = `Highest Score: ${max}`;
+    }
+
+    function clearAnalytics() {
+      if (confirm("Are you sure you want to delete all leaderboard data?")) {
+        localStorage.removeItem('leaderboard');
+        loadAnalytics();
+      }
+    }
+
+    loadAnalytics();
+  </script>
+</body>
+</html>

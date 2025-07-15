@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Edit Question</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f4f8;
+      max-width: 800px;
+      margin: auto;
+      padding: 20px;
+      color: #333;
+    }
+    h2 {
+      color: #2c3e50;
+      text-align: center;
+    }
+    .section {
+      margin-bottom: 20px;
+    }
+    .label {
+      font-weight: bold;
+      margin-top: 10px;
+    }
+    .original {
+      background: #e0e0e0;
+      padding: 10px;
+      border-radius: 5px;
+      margin-bottom: 5px;
+    }
+    input, textarea, select, button {
+      width: 100%;
+      padding: 10px;
+      margin: 5px 0 15px;
+      border-radius: 5px;
+      border: 1px solid #bdc3c7;
+      font-size: 16px;
+    }
+    button {
+      background: #3498db;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #2980b9;
+    }
+    .home-button {
+      background: #e74c3c;
+      margin-top: 20px;
+    }
+    .home-button:hover {
+      background: #c0392b;
+    }
+    #status {
+      text-align: center;
+      font-size: 14px;
+      color: #27ae60;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Edit Question</h2>
+
+  <form id="editForm">
+    <div class="section">
+      <div class="label">Original Question:</div>
+      <div class="original" id="originalQuestion"></div>
+      <textarea id="questionText" placeholder="Edit question" required></textarea>
+    </div>
+
+    <div class="section">
+      <div class="label">Original Options:</div>
+      <div class="original" id="originalOptions"></div>
+      <input type="text" id="opt1" placeholder="Edit Option 1" required>
+      <input type="text" id="opt2" placeholder="Edit Option 2" required>
+      <input type="text" id="opt3" placeholder="Edit Option 3" required>
+      <input type="text" id="opt4" placeholder="Edit Option 4" required>
+      <select id="correctIndex">
+        <option value="0">Correct: Option 1</option>
+        <option value="1">Correct: Option 2</option>
+        <option value="2">Correct: Option 3</option>
+        <option value="3">Correct: Option 4</option>
+      </select>
+    </div>
+
+    <div class="section">
+      <div class="label">Original Explanation:</div>
+      <div class="original" id="originalExplanation"></div>
+      <textarea id="explanation" placeholder="Edit explanation" required></textarea>
+    </div>
+
+    <button type="submit">Update</button>
+  </form>
+
+  <p id="status"></p>
+  <button class="home-button" onclick="window.location.href='all-questions.html'">⬅️ Back to Questions</button>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const questionId = urlParams.get('id');
+
+    fetch(`/api/admin/question/${questionId}`)
+      .then(res => {
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        return res.json();
+      })
+      .then(q => {
+        if (!q || !q.options || q.options.length < 4) {
+          document.getElementById('status').innerText = "Error loading question data.";
+          return;
+        }
+
+        // Show original data
+        document.getElementById('originalQuestion').innerText = q.text;
+        document.getElementById('originalOptions').innerHTML = q.options.map((opt, i) =>
+          `${i + 1}. ${opt.text} ${opt.correct ? '✅' : ''}`
+        ).join('<br>');
+        document.getElementById('originalExplanation').innerText = q.explanation || '';
+
+        // Fill editable fields
+        document.getElementById('questionText').value = q.text || '';
+        document.getElementById('opt1').value = q.options[0].text || '';
+        document.getElementById('opt2').value = q.options[1].text || '';
+        document.getElementById('opt3').value = q.options[2].text || '';
+        document.getElementById('opt4').value = q.options[3].text || '';
+        document.getElementById('correctIndex').value = q.options.findIndex(opt => opt.correct);
+        document.getElementById('explanation').value = q.explanation || '';
+      })
+      .catch(err => {
+        document.getElementById('status').innerText = "Failed to load question.";
+        console.error('Fetch error:', err);
+      });
+
+    document.getElementById('editForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const options = [
+        { text: document.getElementById('opt1').value, isCorrect: false },
+        { text: document.getElementById('opt2').value, isCorrect: false },
+        { text: document.getElementById('opt3').value, isCorrect: false },
+        { text: document.getElementById('opt4').value, isCorrect: false }
+      ];
+      const correct = parseInt(document.getElementById('correctIndex').value);
+      options[correct].isCorrect = true;
+
+      const payload = {
+        text: document.getElementById('questionText').value,
+        options: options,
+        explanation: document.getElementById('explanation').value
+      };
+
+      fetch(`/api/admin/question/${questionId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      })
+      .then(res => res.text())
+      .then(msg => {
+        document.getElementById('status').innerText = msg;
+      })
+      .catch(err => {
+        document.getElementById('status').innerText = "Failed to update question.";
+        console.error('Update error:', err);
+      });
+    });
+  </script>
+</body>
+</html>

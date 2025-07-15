@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Leaderboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f9f9f9;
+      padding: 20px;
+      max-width: 700px;
+      margin: auto;
+      text-align: center;
+    }
+    h2 {
+      color: #4CAF50;
+      margin-bottom: 20px;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      background: white;
+      margin: 10px 0;
+      padding: 15px;
+      border-radius: 5px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .delete-btn {
+      background: #f44336;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .delete-btn:hover {
+      background: #d32f2f;
+    }
+    .clear-btn {
+      margin-top: 20px;
+      padding: 12px 24px;
+      font-size: 16px;
+      background: #FF5722;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .clear-btn:hover {
+      background: #E64A19;
+    }
+    .back-btn {
+      margin-top: 10px;
+      padding: 10px 20px;
+      background: #2196F3;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .back-btn:hover {
+      background: #1976D2;
+    }
+  </style>
+</head>
+<body>
+  <h2>🛠️ Admin Leaderboard Management</h2>
+  <ul id="leaderboard"></ul>
+  <button class="clear-btn" onclick="clearLeaderboard()">Clear All Results</button><br>
+  <button class="back-btn" onclick="window.location.href='admin-dashboard.html'">Back to Admin Panel</button>
+
+  <script>
+    function loadLeaderboard() {
+      const leaderboard = JSON.parse(localStorage.getItem('leaderboard') || '[]');
+      const list = document.getElementById('leaderboard');
+      list.innerHTML = '';
+
+      if (leaderboard.length === 0) {
+        list.innerHTML = '<li>No results found.</li>';
+        return;
+      }
+
+      leaderboard.forEach((entry, index) => {
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <span>${entry.name} - ${entry.score} pts</span>
+          <button class="delete-btn" onclick="deleteEntry(${index})">Delete</button>
+        `;
+        list.appendChild(li);
+      });
+    }
+
+    function deleteEntry(index) {
+      const leaderboard = JSON.parse(localStorage.getItem('leaderboard') || '[]');
+      leaderboard.splice(index, 1);
+      localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
+      loadLeaderboard();
+    }
+
+    function clearLeaderboard() {
+      if (confirm("Are you sure you want to delete all results?")) {
+        localStorage.removeItem('leaderboard');
+        loadLeaderboard();
+      }
+    }
+
+    loadLeaderboard();
+  </script>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Quiz Completed</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f4f4f4;
+      text-align: center;
+      padding: 50px 20px;
+    }
+    h1 {
+      color: #4CAF50;
+      margin-bottom: 10px;
+    }
+    p {
+      font-size: 18px;
+      color: #555;
+      margin-bottom: 30px;
+    }
+    button {
+      padding: 15px 30px;
+      font-size: 18px;
+      background: #2196F3;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 10px;
+    }
+    button:hover {
+      background: #1976D2;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎉 Quiz Completed!</h1>
+  <div id="summary"></div>
+
+  <script>
+    const name = localStorage.getItem('quizUser') || 'Anonymous';
+    const score = localStorage.getItem('quizScore') || 0;
+
+    // Mark quiz as completed for the logged-in user
+    const email = localStorage.getItem('loggedInUserEmail');
+    const users = JSON.parse(localStorage.getItem('users')) || [];
+    const updatedUsers = users.map(user => {
+      if (user.email === email) {
+        return { ...user, quizCompleted: true };
+      }
+      return user;
+    });
+    localStorage.setItem('users', JSON.stringify(updatedUsers));
+
+    document.getElementById('summary').innerHTML = `
+      <p><strong>${name}</strong>, your score is <strong>${score}/5</strong></p>
+      <button onclick="saveScore()">Save to Leaderboard</button>
+      <button onclick="window.location.href='index.html'">Go to Home</button>
+    `;
+
+    function saveScore() {
+      const leaderboard = JSON.parse(localStorage.getItem('leaderboard') || '[]');
+      leaderboard.push({ name, score: parseInt(score) });
+      localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
+      window.location.href = 'leaderboard.html';
+    }
+  </script>
+</body>
+</html>

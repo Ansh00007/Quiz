@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(to right, #e3f2fd, #f1f8e9);
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    header {
+      background: #2e7d32;
+      color: white;
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logout-btn {
+      background: #f44336;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .button-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 30px;
+    }
+    .dashboard-btn {
+      margin: 10px;
+      padding: 15px 30px;
+      font-size: 16px;
+      background: #2196F3;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .dashboard-btn:hover {
+      background: #1976D2;
+    }
+  </style>
+</head>
+<body>
+  <script>
+    if (localStorage.getItem('isAdminLoggedIn') !== 'true') {
+      alert("Please login first.");
+      window.location.href = 'admin-auth.html';
+    }
+    function logout() {
+      localStorage.removeItem('isAdminLoggedIn');
+      window.location.href = 'admin-auth.html';
+    }
+  </script>
+
+  <header>
+    <h1>Admin Dashboard</h1>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </header>
+
+  <main class="button-group">
+    <button class="dashboard-btn" onclick="window.location.href='admin.html'">➕ Add Question</button>
+    <button class="dashboard-btn" onclick="window.location.href='view-questions.html'">📋 View All Questions</button>
+    <button class="dashboard-btn" onclick="window.location.href='admin-analytics.html'">📊 View Analytics</button>
+    <button class="dashboard-btn" onclick="window.location.href='admin-leaderboard.html'">🏆 Manage Leaderboard</button>
+    <button class="dashboard-btn" onclick="window.location.href='index.html'">🏠 Back to Home</button>
+  </main>
+</body>
+</html>
